@@ -1,0 +1,81 @@
+html {
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    margin: 0 auto; /* Important! */
+    font-family: sans-serif;
+    background:
+      linear-gradient(45deg, hsla(340, 100%, 55%, 1) 0%, hsla(340, 100%, 55%, 0) 70%),
+      linear-gradient(135deg, hsla(225, 95%, 50%, 1) 10%, hsla(225, 95%, 50%, 0) 80%),
+      linear-gradient(225deg, hsla(140, 90%, 50%, 1) 10%, hsla(140, 90%, 50%, 0) 80%),
+      linear-gradient(315deg, hsla(35, 95%, 55%, 1) 100%, hsla(35, 95%, 55%, 0) 70%);
+}
+
+h1 {
+    font-size: 50px;
+    color: black;
+    font-weight: bold;
+    text-align: center;
+    padding-top: 40px;
+    font-style: italic;
+}
+
+label {
+    width: 200px;
+    position: left;
+}
+
+input {
+    width: 100px;
+    position: right;
+}
+
+.styleInput {
+    display: grid;
+    justify-content: center;
+}
+
+.wrapper {
+    display: grid;
+    grid-template-columns: repeat(3, 120px);
+    grid-template-rows: repeat(3, 120px);
+    justify-content: center;
+}
+
+.item {
+    background-color: gray;
+    color: white;
+    border: #000000 solid 2px;
+    font-size: 20px;
+    text-align: center;
+    justify-content: center;
+    font-size: 110px;
+}
+
+.center {
+    display: flex;
+    justify-content: center;
+    padding: 5px;
+}
+
+.buttonStyle {
+    position: absolute;
+    bottom: 50px;
+    width: 80px;
+    height: 50px;
+    font-weight: bold;
+    font-size: 20px;
+    visibility: hidden; 
+}
+
+.item.open {
+    font-size: 110px;
+
+}
+
+p {
+    font-size: 20px;
+    text-align: center;
+}
