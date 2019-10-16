@@ -4,6 +4,7 @@ var player2 = [];
 const characterX = 'X';
 const characterO = 'O';
 
+var isWin = false;
 var wrap = document.querySelector('.wrapper');
 var items = Array.from(wrap.querySelectorAll('.item'));
 var button = document.querySelector('.styleButton');
@@ -20,7 +21,8 @@ getColumnAll(arrIntoColumn, n);
 
 function resetAll() {
     reset();
-    items.forEach(item => item.innerText = '');
+    items.forEach(item => item.innerHTML = '');
+    document.getElementById('notification').innerHTML = '';
 }
 
 function reset() {
@@ -28,6 +30,7 @@ function reset() {
     player1 = [];
     player2 = [];
     check = true;
+    isWin = false;
 }
 function getRowAll(arrRow, n) {
     let arrTemp = [];
@@ -60,10 +63,14 @@ function getColumn(arr, i, n) {
     }
 }
 
-function changeValueCondition() {
-    if (m > n) {
+function changeValueCondition(conditionWin, number) {
+    if (conditionWin > number) {
         m = 3;
         alert('Điều kiện thắng không lớn hơn hàng hoặc cột, về mặc định bằng 3');
+        document.getElementById('input2').value = m;
+    } else if (conditionWin < 2) {
+        m = 3;
+        alert('Điều kiện thắng không để trống hoặc nhỏ hơn 2, về mặc định bằng 3');
         document.getElementById('input2').value = m;
     }
 }
@@ -81,7 +88,9 @@ function getValue() {
     addElement(n);
     wrap.innerHTML = html.join('');
     items = Array.from(wrap.querySelectorAll('.item'));
-    items.forEach(item => item.addEventListener('click', playerGame));
+    if (isWin === false) {
+        items.forEach(item => item.addEventListener('click', playerGame));
+    }
 }
 
 function addElement(n) {
@@ -180,6 +189,42 @@ function consecutiveIntoColumn(player, m) {
     return false;
 }
 
+function diagonalToRight(player, m) {
+    let count = 1;
+    for (let i = 0; i < player.length - 1; i++) {
+        for (let j = i + 1; j < player.length; j++) {
+            if (player[i] + n + 1 === player[j]) {
+                count++;
+                break;
+            } else {
+                count = 1;
+                break;
+            }
+        }
+        if (count === m)
+            return true;
+    }
+    return false;
+}
+
+function diagonalToLeft(player, m) {
+    let count = 1;
+    for (let i = 0; i < player.length - 1; i++) {
+        for (let j = i + 1; j < player.length; j++) {
+            if (player[i] + n - 1 === player[j]) {
+                count++;
+                break;
+            } else {
+                count = 1;
+                break;
+            }
+        }
+        if (count === m)
+            return true;
+    }
+    return false;
+}
+
 function convertToNum(player) {
     var temp = [];
     for (let i = 0; i < player.length; i++) {
@@ -193,7 +238,7 @@ function sortArr(player) {
 }
 
  function playerWin(player, m) {
-    player = convertToNum(player);
+    //player = convertToNum(player);
     let personWinner = sortArr(player);
     if (consecutiveIntoRow(personWinner, m)) {
         return true;
@@ -201,41 +246,54 @@ function sortArr(player) {
     if (consecutiveIntoColumn(personWinner, m)) {
         return true;
     }
+    if (diagonalToRight(personWinner, m)) {
+        return true;
+    }
+    if (diagonalToLeft(personWinner, m)) {
+        return true;
+    }
     return false;
 }
 
 function playerGame(){
-    let value = this.dataset.key;
-    if (check === true) {
-        if (player2.indexOf(value) < 0) {
-            if (player1.indexOf(value) < 0) {
-                player1.push(value);
-                this.innerText = characterX;
-                check = false;
+    if (!isWin) {
+        let value = parseInt(this.dataset.key);
+        if (check === true) {
+            if (player2.indexOf(value) < 0) {
+                if (player1.indexOf(value) < 0) {
+                    player1.push(value);
+                    this.innerText = characterX;
+                    check = false;
+                }
+            }
+        } else if (player1.indexOf(value) < 0) {
+            if (player2.indexOf(value) < 0) {
+                player2.push(value);
+                this.innerText = characterO;
+                check = true;
             }
         }
-    } else if (player1.indexOf(value) < 0) {
-        if (player2.indexOf(value) < 0) {
-            player2.push(value);
-            this.innerText = characterO;
-            check = true;
-        }
-    }
 
-    if (player1.length >= 3) {
-        Finally();
+        if (player1.length >= 3) {
+            Finally();
+        }
     }
 }
 
 function Finally() {
     if (playerWin(player1, m)) {
         document.getElementById('notification').innerHTML = 'Player 1 Win !!!';
+        isWin = true;
     } else if (playerWin(player2, m)) {
         document.getElementById('notification').innerHTML = 'Player 2 Win !!!';
+        isWin = true;
     }
 }
 
-Finally();
-items.forEach(item => item.addEventListener('click', playerGame));
+if (isWin === false)
+{
+    items.forEach(item => item.addEventListener('click', playerGame));
+}
+
 
 
