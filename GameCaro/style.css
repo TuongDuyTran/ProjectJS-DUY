@@ -60,16 +60,6 @@ input {
     padding: 5px;
 }
 
-.buttonStyle {
-    position: absolute;
-    bottom: 50px;
-    width: 80px;
-    height: 50px;
-    font-weight: bold;
-    font-size: 20px;
-    visibility: hidden; 
-}
-
 .item.open {
     font-size: 110px;
 

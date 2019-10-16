@@ -16,11 +16,12 @@
 
         <div>
             <label for="inputConditionWin">Nhập điều kiện chiến thắng: </label>
-            <input type="text" name="input2" class="conditionWin" id="input2">
+            <input type="text" name="input2" class="conditionWin" id="input2" onchange="changeValueCondition()">
         </div>
 
         <div>
-            <button type="button" onclick="getValue()">Submit</button>
+            <button type="button" onclick="getValue()"> Submit </button>
+            <button type="button" onclick="reset()"> Reset </button>
         </div>
     </div>
     <br>
@@ -34,10 +35,6 @@
         <div class="item" data-key="7"></div>
         <div class="item" data-key="8"></div>
         <div class="item" data-key="9"></div>
-    </div>
-
-    <div class="center">
-        <button class="buttonStyle"> Reset </button>
     </div>
 
     <p id='notification'></p>
