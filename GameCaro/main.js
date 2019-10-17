@@ -15,23 +15,24 @@ var check = true;
 
 var arrIntoRow = [];
 var arrIntoColumn = [];
+var arrIntoDiagonalRight = [];
+var arrIntoDiagonalLeft = [];
 
 getRowAll(arrIntoRow, n);
 getColumnAll(arrIntoColumn, n);
+getDiagonalRightAll(arrIntoDiagonalRight, m);
+getDiagonalLeftAll(arrIntoDiagonalLeft, m);
 
 function resetAll() {
-    reset();
-    items.forEach(item => item.innerHTML = '');
-    document.getElementById('notification').innerHTML = '';
-}
-
-function reset() {
     html = [];
     player1 = [];
     player2 = [];
     check = true;
     isWin = false;
+    items.forEach(item => item.innerHTML = '');
+    document.getElementById('notification').innerHTML = '';
 }
+
 function getRowAll(arrRow, n) {
     let arrTemp = [];
     let boiSo = 1;
@@ -64,30 +65,35 @@ function getColumn(arr, i, n) {
 }
 
 function changeValueCondition(conditionWin, number) {
+    let valueDefault = 3;
     if (conditionWin > number) {
-        m = 3;
         alert('Điều kiện thắng không lớn hơn hàng hoặc cột, về mặc định bằng 3');
-        document.getElementById('input2').value = m;
-    } else if (conditionWin < 2) {
-        m = 3;
+        document.getElementById('input2').value = valueDefault;
+        m = valueDefault;
+    } else if (conditionWin < 3 || isNaN(conditionWin) === true) {
         alert('Điều kiện thắng không để trống hoặc nhỏ hơn 2, về mặc định bằng 3');
-        document.getElementById('input2').value = m;
+        document.getElementById('input2').value = valueDefault;
+        m = valueDefault;
+    } else {
+        m = conditionWin;
     }
 }
 
 function getValue() {
-    reset();
+    resetAll();
     document.getElementById('notification').innerHTML = '';
 
     var inputRowAndColumn = document.getElementById('input1');
     var condition = document.getElementById('input2');
 
-    n = parseInt(inputRowAndColumn.value);
-    m = parseInt(condition.value);
-    changeValueCondition(m,n);
+    let number = parseInt(inputRowAndColumn.value);
+    let conditionWin = parseInt(condition.value);
+    changeValueCondition(conditionWin, number);
+    n = number;
     addElement(n);
     wrap.innerHTML = html.join('');
     items = Array.from(wrap.querySelectorAll('.item'));
+
     if (isWin === false) {
         items.forEach(item => item.addEventListener('click', playerGame));
     }
@@ -101,8 +107,12 @@ function addElement(n) {
         let data = 1;
         arrIntoRow = [];
         arrIntoColumn = [];
+        arrIntoDiagonalRight = [];
+        arrIntoDiagonalLeft = [];
         getRowAll(arrIntoRow, n);
         getColumnAll(arrIntoColumn, n);
+        getDiagonalRightAll(arrIntoDiagonalRight, m);
+        getDiagonalLeftAll(arrIntoDiagonalLeft, m);
         while (length > 0) {
             html.push(`<div class="item" data-key="${data}"></div>`);
             data++;
@@ -111,11 +121,11 @@ function addElement(n) {
     }
 }
 
-function checkIntoRow(arrIntoRow, temp) {
-    for (let element in arrIntoRow) {
+function checkArrayIndex(arr, temp) {
+    for (let element in arr) {
         let check = 0;
-        for (let i = 0; i < arrIntoRow[element].length; i++) {
-            if (temp.indexOf(arrIntoRow[element][i]) >= 0) {
+        for (let i = 0; i < arr[element].length; i++) {
+            if (temp.indexOf(arr[element][i]) >= 0) {
             check++;
             }
         }
@@ -127,102 +137,170 @@ function checkIntoRow(arrIntoRow, temp) {
 }
 
 function consecutiveIntoRow(player, m) {
-    let count = 1;
-    let temp = [];
-    for (let i = 0; i < player.length - 1; i++) {
-        for (let j = i + 1; j < player.length; j++) {
-            if (player[i] + 1 === player[j]) {
-                temp.push(player[i]);
-                count++;
-                if (count === m)
-                    temp.push(player[j]);
-                break;
-            } else {
-                count = 1;
-                break;
-            }
-        }
-        if (count === m) {
-            if (checkIntoRow(arrIntoRow, temp)) 
-                return true;
-        }
+    // let count = 1;
+    // let temp = [];
+    // for (let i = 0; i < player.length - 1; i++) {
+    //     for (let j = i + 1; j < player.length; j++) {
+    //         if (player[i] + 1 === player[j]) {
+    //             temp.push(player[i]);
+    //             count++;
+    //             if (count === m)
+    //                 temp.push(player[j]);
+    //             break;
+    //         } else {
+    //             count = 1;
+    //             break;
+    //         }
+    //     }
+    //     if (count === m) {
+    //         if (checkArrayIndex(arrIntoRow, temp)) 
+    //             return true;
+    //     }
+    // }
+    // return false;
+    if (checkArrayIndex(arrIntoRow, player)) {
+        return true;
+    } else {
+        return false;
     }
-    return false;
-}
-
-function checkIntoColumn(arrIntoColumn, temp) {
-    for (let element in arrIntoColumn) {
-        let check = 0;
-        for (let i = 0; i < arrIntoColumn[element].length; i++) {
-            if (temp.indexOf(arrIntoColumn[element][i]) >= 0) {
-            check++;
-            }
-        }
-        if (check === m) {
-            return true;
-        }
-    }
-    return false;
 }
 
 function consecutiveIntoColumn(player, m) {
-    let count = 1;
-    let temp = [];
-    for (let i = 0; i < player.length - 1; i++) {
-        for (let j = i + 1; j < player.length; j++) {
-            if (player[i] + n === player[j]) {
-                temp.push(player[i]);
-                count++;
-                if (count === m)
-                    temp.push(player[j]);
-                break;
-            } else {
-                count = 1;
-                break;
-            }
-        }
-        if (count === m) {
-            if (checkIntoColumn(arrIntoColumn, temp))
-                return true;
-        }
+    // let count = 1;
+    // let temp = [];
+    // for (let i = 0; i < player.length - 1; i++) {
+    //     for (let j = i + 1; j < player.length; j++) {
+    //         if (player[i] + n === player[j]) {
+    //             temp.push(player[i]);
+    //             count++;
+    //             if (count === m)
+    //                 temp.push(player[j]);
+    //             break;
+    //         } else {
+    //             count = 1;
+    //             break;
+    //         }
+    //     }
+    //     if (count === m) {
+    //         if (checkArrayIndex(arrIntoColumn, temp))
+    //             return true;
+    //     }
+    // }
+    // return false;
+    if (checkArrayIndex(arrIntoColumn, player)) {
+        return true;
+    } else {
+        return false;
     }
-    return false;
+}
+
+function getArrayDiagonalRight(arrTemp , i, stop) {
+    let countStop = stop;
+    let j = i;
+    while (countStop <= n) {
+        arrTemp.push(j);
+        j += n + 1;
+        countStop++;
+    }
+    return arrTemp;
+}
+
+function getDiagonalRightAll(arrIntoDiagonalRight, m) {
+    let length = n - m + 1; // 3
+    let stop = length;
+    let row = n;
+    arrIntoDiagonalRight.push(getArrayDiagonalRight([], 1, 1));
+    while (length > 1) {
+        arrIntoDiagonalRight.push(getArrayDiagonalRight([], length, stop));
+        arrIntoDiagonalRight.push(getArrayDiagonalRight([], row*(length - 1) + 1, stop));
+        length--;
+        stop--;
+    }
+}
+
+function getArrayDiagonalLeft(arrTemp, i, stop) {
+    let countStop = stop;
+    let j = i;
+    while (countStop >= 1) {
+        arrTemp.push(j);
+        j += n - 1;
+        countStop--;
+    }
+    return arrTemp;
+}
+
+function getDiagonalLeftAll(arrIntoDiagonalLeft, m) {
+    let length = m;
+    let stop = length;
+    let index = length - 1;
+    let row = n;
+    let rowAndColumn = n*n;
+    arrIntoDiagonalLeft.push(getArrayDiagonalLeft([], n, n));
+    while (length < n) {
+        arrIntoDiagonalLeft.push(getArrayDiagonalLeft([], length, stop));
+        arrIntoDiagonalLeft.push(getArrayDiagonalLeft([], rowAndColumn - (row*index), stop));
+        length++;
+        stop++;
+        index++;
+    }
 }
 
 function diagonalToRight(player, m) {
-    let count = 1;
-    for (let i = 0; i < player.length - 1; i++) {
-        for (let j = i + 1; j < player.length; j++) {
-            if (player[i] + n + 1 === player[j]) {
-                count++;
-                break;
-            } else {
-                count = 1;
-                break;
-            }
-        }
-        if (count === m)
-            return true;
+    // let count = 1;
+    // let arrTemp = [];
+    // for (let i = 0; i < player.length - 1; i++) {
+    //     for (let j = i + 1; j < player.length; j++) {
+    //         if (player[i] + n + 1 === player[j]) {
+    //             arrTemp.push(player[i]);
+    //             count++;
+    //             if (count === m)
+    //                 arrTemp.push(player[j]);
+    //             break;
+    //         } else {
+    //             count = 1;
+    //             break;
+    //         }
+    //     }
+    //     if (count === m) {
+    //         if (checkArrayIndex(arrIntoDiagonalRight, arrTemp))
+    //             return true;
+    //     }
+    // }
+    // return false;
+    if (checkArrayIndex(arrIntoDiagonalRight, player)) {
+        return true;
+    } else {
+        return false;
     }
-    return false;
 }
 
 function diagonalToLeft(player, m) {
-    let count = 1;
-    for (let i = 0; i < player.length - 1; i++) {
-        for (let j = i + 1; j < player.length; j++) {
-            if (player[i] + n - 1 === player[j]) {
-                count++;
-                break;
-            } else {
-                count = 1;
-                break;
-            }
-        }
-        if (count === m)
-            return true;
+    // let arrTemp = [];
+    // let count = 1;
+    // for (let i = 1; i < player.length - 1; i++) { // should start index = 1;
+    //     for (let j = i + 1; j < player.length; j++) {
+    //         if (player[i] + n - 1 === player[j]) {
+    //             arrTemp.push(player[i]);
+    //             count++;
+    //             if (count === m)
+    //                 arrTemp.push(player[j]);
+    //             break;
+    //         } else {
+    //             count = 1;
+    //             break;
+    //         }
+    //     }
+    //     if (count === m) {
+    //         if (checkArrayIndex(arrIntoDiagonalLeft, arrTemp))
+    //             return true;
+    //     }
+    // }
+    // return false;
+    if (checkArrayIndex(arrIntoDiagonalLeft, player)) {
+        return true;
+    } else {
+        return false;
     }
-    return false;
 }
 
 function convertToNum(player) {
@@ -290,10 +368,8 @@ function Finally() {
     }
 }
 
-if (isWin === false)
-{
-    items.forEach(item => item.addEventListener('click', playerGame));
-}
+items.forEach(item => item.addEventListener('click', playerGame));
+
 
 
 
